@@ -108,6 +108,30 @@ class HiroGraph(AuthenticatedAPIHandler):
             data['listMeta'] = meta
         return self.post(url, data)
 
+    def combined_query(self,
+                      elastic_query: str,
+                      gremlin_query: str,
+                      limit: int = -1
+                      ) -> dict:
+        """
+        Disclaimer: Combined query is to be treated as a experimental feature. It is not yet fully supported and may change in the future.
+
+        https://core.engine.datagroup.de/help/specs/?url=definitions/graph.yaml#/[Query]_Search/post_query_gremlin
+
+        :param elastic_query: Elastic search query for finding root nodes.
+        :param gremlin_query: Gremlin query to execute.
+        :param limit: Maximum number of results to return.
+        :return: Result payload
+        """
+        url = self.endpoint + '/query/combined'
+
+        data = {"elasticsearch_query": str(elastic_query),
+                "gremlin_query": str(gremlin_query),
+                "limit": limit}
+       
+        return self.post(url, data)
+
+
     def create_node(self, data: dict, obj_type: str, return_id=False) -> Union[dict, str]:
         """
         https://core.engine.datagroup.de/help/specs/?url=definitions/graph.yaml#/[Graph]_Entity/post_new__type_
